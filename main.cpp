@@ -2,33 +2,58 @@
 
 SDL_Window* g_pWindow = 0;
 SDL_Renderer* g_pRenderer = 0;
+bool g_bRunning = false;
+
+bool init(const char* title, int xpos, int ypos, int height, int width, int flags);
+void render();
 
 int main(int argc, char* args[])
-{
- 
-  if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+{ 
+  if ( init("Breaking Up HelloSDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN) )
   {
-    return 1;
+    g_bRunning = true;
+  }
+  else
+  {
+    return 1; // something's wrong
+  }
+  
+  while (g_bRunning)
+  {
+    render();
   }
 
-  g_pWindow = SDL_CreateWindow("Setting up SDL 10/29", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN);
+  SDL_Quit();
+
+  return 0;
+}
+
+bool init(const char* title, int xpos, int ypos, int height, int width, int flags)
+{
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+  {
+    return false;
+  }
+
+  g_pWindow = SDL_CreateWindow(title, xpos, ypos, height, width, flags);
   if (g_pWindow == 0)
   {
-    return 1;
+    return false;
   }
 
   g_pRenderer = SDL_CreateRenderer(g_pWindow, -1, 0);
   if (g_pRenderer == 0)
   {
-    return 1;
+    return false;
   }
-  
-  SDL_SetRenderDrawColor(g_pRenderer, 255, 0, 0, 255);
+
+  SDL_SetRenderDrawColor(g_pRenderer, 0, 0, 0, 255);
+
+  return true;
+}
+
+void render()
+{
   SDL_RenderClear(g_pRenderer);
   SDL_RenderPresent(g_pRenderer);
-
-  SDL_Delay(5000);
-  SDL_Quit();
-
-  return 0;
 }
