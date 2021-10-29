@@ -1,7 +1,6 @@
 #include "Game.h"
-#include "SDL_image.h"
 
-bool Game::init(const char *title, int xpos, int ypos, int width, int height, int flags)
+bool Game::init(const char *title, int xpos, int ypos,  int width, int height, int flags)
 {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
   {
@@ -17,26 +16,12 @@ bool Game::init(const char *title, int xpos, int ypos, int width, int height, in
   m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, 0);
   if (m_pRenderer == 0)
   {
-    return false; // 렌더러 생성 실패
+    return false; // 랜더러 생성 실패
   }
 
+  m_textureManager.load("Assets/animate-alpha.png", "animate", m_pRenderer);
+
   SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 0, 255);
-
-  SDL_Surface* pTempSurface = IMG_Load("Assets/animate-alpha.png");
-  m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
-  SDL_FreeSurface(pTempSurface);
-
-  //원본상자
-  m_sourceRectangle.w = 128;
-  m_sourceRectangle.h = 82;
-  m_sourceRectangle.x = 0;
-  m_sourceRectangle.y = 0;
-
-  //대상상자
-  m_destinationRectangle.w = m_sourceRectangle.w;
-  m_destinationRectangle.h = m_sourceRectangle.h;
-  m_destinationRectangle.x = 0;
-  m_destinationRectangle.y = 0;
 
   m_bRunning = true;
 
@@ -45,14 +30,15 @@ bool Game::init(const char *title, int xpos, int ypos, int width, int height, in
 
 void Game::update()
 {
-  m_sourceRectangle.x = 128 * ( (SDL_GetTicks() / 100 ) % 6);
+  m_currentFrame = ( (SDL_GetTicks() / 100) % 6);
 }
 
 void Game::render()
 {
   SDL_RenderClear(m_pRenderer);
 
-  SDL_RenderCopy(m_pRenderer, m_pTexture, &m_sourceRectangle, &m_destinationRectangle);
+  m_textureManager.draw("animate", 0, 0, 128, 82, m_pRenderer);
+  m_textureManager.drawFrame("animate", 100, 100, 128, 82, 0, m_currentFrame, m_pRenderer);
 
   SDL_RenderPresent(m_pRenderer);
 }
