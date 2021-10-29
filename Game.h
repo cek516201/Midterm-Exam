@@ -3,8 +3,8 @@
 
 #include "SDL.h"
 #include "TextureManager.h"
+#include "vector"
 #include "GameObject.h"
-#include "Player.h"
 
 class Game
 {
@@ -27,8 +27,7 @@ private:
 
   int m_currentFrame;
 
-  GameObject m_go;
-  Player m_player;
+  std::vector<GameObject*> m_gameObjects;
 };
 
 #endif
