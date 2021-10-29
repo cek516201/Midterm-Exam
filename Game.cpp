@@ -21,14 +21,17 @@ bool Game::init(const char *title, int xpos, int ypos, int width, int height, in
 
   SDL_SetRenderDrawColor(m_pRenderer, 255, 255, 255, 255);
 
-  SDL_Surface* pTempSurface = SDL_LoadBMP("Assets/rider.bmp");
+  SDL_Surface* pTempSurface = SDL_LoadBMP("Assets/animate.bmp");
   m_pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTempSurface);
   SDL_FreeSurface(pTempSurface);
 
-  SDL_QueryTexture(m_pTexture, NULL, NULL, &m_sourceRectangle.w, &m_sourceRectangle.h);
+  //원본상자
+  m_sourceRectangle.w = 128;
+  m_sourceRectangle.h = 82;
   m_sourceRectangle.x = 0;
   m_sourceRectangle.y = 0;
 
+  //대상상자
   m_destinationRectangle.w = m_sourceRectangle.w;
   m_destinationRectangle.h = m_sourceRectangle.h;
   m_destinationRectangle.x = 0;
@@ -41,7 +44,7 @@ bool Game::init(const char *title, int xpos, int ypos, int width, int height, in
 
 void Game::update()
 {
-
+  m_sourceRectangle.x = 128 * ( (SDL_GetTicks() / 100 ) % 6);
 }
 
 void Game::render()
